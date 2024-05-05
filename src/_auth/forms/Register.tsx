@@ -1,3 +1,4 @@
+import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 
@@ -12,50 +13,68 @@ import {
   import { Input } from "@/components/ui/input"
   import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { LoginSchema } from "@/lib/validation"
+import { RegisterSchema } from "@/lib/validation"
 import Loader from "@/components/custom/Loader"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useCreateAccount, useLoginAccount } from "@/lib/react-query/queriesAndMutation"
+import { useUserContext } from "@/context/AuthContext"
 
-const Login = () => {
-    const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateAccount();
+const Register = () => {
+  
+  const navigate = useNavigate();
+const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-    const { mutateAsync: loginAccount, isLoading: isLogin } =
-    useLoginAccount();
 
-    // 1. Define your form.
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      name: "",
-      username: "",
-      email: "",
-      password: "",
-    },
-  })
+const form = useForm<z.infer<typeof RegisterSchema>>({
+  resolver: zodResolver(RegisterSchema),
+  defaultValues: {
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+  },
+});
 
+const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
+const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
  
-  async function onSubmit(values: z.infer<typeof LoginSchema>) {
-    const newUser = await createUserAccount(values);
+const handleRegister = async (user: z.infer<typeof RegisterSchema>) => {
+  try {
+    const newUser = await createUserAccount(user);
 
-    if(!newUser) {
-        return toast(
-            "Registration failed. Please try again."
-        )
+    if (!newUser) {
+      toast("Registration failed. Please try again.");
+      
+      return;
     }
 
     const session = await loginAccount({
-        email: values.email,
-        password: values.password,
-    })
+        email: user.email,
+        password: user.password,
+    });
 
     if(!session) {
-        return toast("Login failed. Please try again.")
+        return toast("Something went wrong. Please try again.");
+
+        navigate("/login");
+        
+        return;
     }
 
-    
+    const isLoggedIn = await checkAuthUser();
+
+    if(isLoggedIn) {
+      form.reset();
+
+      navigate("/")
+    } else {
+      toast("Something went wrong while logging in.");
+      return;
+    }
+  } catch (error) {
+    console.log({ error });
   }
+};
 
   return (
       <Form {...form}>
@@ -66,11 +85,11 @@ const Login = () => {
                 Create a new account
             </h2>
             <p className="text-slate-500 small-medium md:base-regular mt-2">
-                To use ConnectionHub enter your details
+                To use ConnectHub enter your details
             </p>        
 
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5 w-full mt-4">
+      <form onSubmit={form.handleSubmit(handleRegister)} className="flex flex-col gap-5 w-full mt-4">
         <FormField
           control={form.control}
           name="name"
@@ -124,7 +143,7 @@ const Login = () => {
           )}
         />
         <Button type="submit" className="shad-button_primary">
-        {isCreatingAccount ? (
+        {isCreatingAccount || isLogin || isUserLoading ? (
             <div className="flex-center gap-2">
                 <Loader /> Loading...
             </div>
@@ -143,4 +162,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
