@@ -16,11 +16,13 @@ import { z } from "zod"
 import { LoginSchema } from "@/lib/validation"
 import Loader from "@/components/custom/Loader"
 import { Link } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
+import { useCreateAccount, useLoginAccount } from "@/lib/react-query/queriesAndMutation"
 
 const Login = () => {
-    const isLoading = false
+    const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } = useCreateAccount();
 
+    const { mutateAsync: loginAccount, isLoading: isLogin } =
+    useLoginAccount();
 
     // 1. Define your form.
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -33,9 +35,6 @@ const Login = () => {
     },
   })
 
-  const { mutateAsync: createUserAccount, isLoading:
-  isCreatingAccount } = useCreateUserAccountMutation();
-  
  
   async function onSubmit(values: z.infer<typeof LoginSchema>) {
     const newUser = await createUserAccount(values);
@@ -46,7 +45,16 @@ const Login = () => {
         )
     }
 
-    // const session = await loginAccount()
+    const session = await loginAccount({
+        email: values.email,
+        password: values.password,
+    })
+
+    if(!session) {
+        return toast("Login failed. Please try again.")
+    }
+
+    
   }
 
   return (
@@ -116,7 +124,7 @@ const Login = () => {
           )}
         />
         <Button type="submit" className="shad-button_primary">
-        {isLoading ? (
+        {isCreatingAccount ? (
             <div className="flex-center gap-2">
                 <Loader /> Loading...
             </div>
