@@ -61,6 +61,16 @@ export async function loginAccount(user: {email: string; password: string}) {
     }
 }
 
+export async function getAccount() {
+    try {
+      const currentAccount = await account.get();
+  
+      return currentAccount;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 export async function getCurrentUser() {
     try {
       const currentAccount = await account.get();
@@ -71,7 +81,7 @@ export async function getCurrentUser() {
         appwriteConfig.databaseId,
         appwriteConfig.userCollectionId,
         [Query.equal("accountId", currentAccount.$id)]
-      );
+      )
   
       if (!currentUser) throw Error;
   
