@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 
 import {
     Form,
@@ -15,6 +16,7 @@ import { z } from "zod"
 import { LoginSchema } from "@/lib/validation"
 import Loader from "@/components/custom/Loader"
 import { Link } from "react-router-dom"
+import { createUserAccount } from "@/lib/appwrite/api"
 
 const Login = () => {
     const isLoading = false
@@ -30,10 +32,21 @@ const Login = () => {
       password: "",
     },
   })
+
+  const { mutateAsync: createUserAccount, isLoading:
+  isCreatingAccount } = useCreateUserAccountMutation();
+  
  
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof LoginSchema>) {
-    // const newUser = await createUserAccount(values);
+    const newUser = await createUserAccount(values);
+
+    if(!newUser) {
+        return toast(
+            "Registration failed. Please try again."
+        )
+    }
+
+    // const session = await loginAccount()
   }
 
   return (
