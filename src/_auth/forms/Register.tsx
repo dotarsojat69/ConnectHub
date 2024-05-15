@@ -21,9 +21,11 @@ import { useUserContext } from "@/context/AuthContext"
 
 const Register = () => {
   
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
-const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
+  const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
+  const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
 
 const form = useForm<z.infer<typeof RegisterSchema>>({
   resolver: zodResolver(RegisterSchema),
@@ -35,30 +37,20 @@ const form = useForm<z.infer<typeof RegisterSchema>>({
   },
 });
 
-const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
-const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
- 
-const handleRegister = async (user: z.infer<typeof RegisterSchema>) => {
-  try {
-    const newUser = await createUserAccount(user);
+const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
+    const newUser = await createUserAccount(values);
 
     if (!newUser) {
-      toast("Registration failed. Please try again.");
-      
-      return;
+      return toast("Registration failed. Please try again.");
     }
 
     const session = await loginAccount({
-        email: user.email,
-        password: user.password,
+        email: values.email,
+        password: values.password,
     });
 
     if(!session) {
         return toast("Something went wrong. Please try again.");
-
-        navigate("/login");
-        
-        return;
     }
 
     const isLoggedIn = await checkAuthUser();
@@ -68,13 +60,9 @@ const handleRegister = async (user: z.infer<typeof RegisterSchema>) => {
 
       navigate("/")
     } else {
-      toast("Something went wrong while logging in.");
-      return;
+      return toast("Something went wrong while logging in.");
     }
-  } catch (error) {
-    console.log({ error });
   }
-};
 
   return (
       <Form {...form}>
