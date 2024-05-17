@@ -21,7 +21,7 @@ export async function createUserAccount(user: INewUser) {
             email: newAccount.email,
             username: user.username,
             imageUrl: avatarUrl,
-        })
+        });
 
         return newUser;
     } catch (error) {
