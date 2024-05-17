@@ -1,12 +1,31 @@
+import { Models } from "appwrite";
 import Loader from "@/components/custom/Loader";
 import PostCard from "@/components/custom/PostCard";
-import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutation";
-import { Models } from "appwrite";
-
+import { useGetRecentPosts, useGetUsers } from "@/lib/react-query/queriesAndMutation";
+import UserCard from "@/components/custom/UserCard";
 
 const Home = () => {
   const { data: posts, isPending: isPostLoading, isError:
     isErrorPosts } = useGetRecentPosts();
+
+  const {
+    data: creators,
+    isLoading: isUserLoading,
+    isError: isErrorUsers,
+  } = useGetUsers(10);
+
+  if (isErrorPosts || isErrorUsers) {
+    return (
+      <div className="flex flex-1">
+        <div className="home-container">
+          <p className="body-medium text-light-1">Something bad happened</p>
+        </div>
+        <div className="home-creators">
+          <p className="body-medium text-light-1">Something bad happened</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1">
@@ -18,14 +37,33 @@ const Home = () => {
           ) : (
             <ul className="flex flex-col flex-1 gap-9 w-full">
               {posts?.documents.map((post: Models.Document) => (
+                <li key={post.$id} className="flex justify-center w-full">
                 <PostCard post={post} />
+              </li>
               ))}
             </ul>
           )}
         </div>
       </div>
+
+      <div className="home-creators bg-primary-500">
+        <h3 className="h3-bold text-black">
+          Suggestions
+        </h3>
+        {isUserLoading && !creators ? (
+          <Loader />
+        ) : (
+          <ul className="grid 2xl:grid-cols-2 gap-6">
+            {creators?.documents.map((creator) => (
+              <li key={creator?.$id}>
+                <UserCard user={creator} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default Home
