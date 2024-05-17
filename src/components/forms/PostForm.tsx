@@ -1,36 +1,35 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
-import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form"
-import { Textarea } from "../ui/textarea"
-import FileUploader from "../custom/FileUploader"
-import { Input } from "../ui/input"
-import { PostsSchema } from "@/lib/validation"
+import * as z from "zod"
 import { Models } from "appwrite"
-import { useUserContext } from "@/context/AuthContext"
-import { toast } from "sonner"
+import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import { useCreatePost } from "@/lib/react-query/queriesAndMutation"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { Input } from "../ui/input"
+import { Textarea } from "../ui/textarea"
+import { PostsSchema } from "@/lib/validation"
+import { toast } from "sonner"
+import { useUserContext } from "@/context/AuthContext"
+import FileUploader from "../custom/FileUploader"
+import Loader from "../custom/Loader"
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutation"
 
 type PostFormProps  ={
     post?: Models.Document;
-}
+    action: "Create" | "Update";
+};
 
-const PostForm = ({ post }: PostFormProps) => {
-    const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost();
-    const { user } = useUserContext();
-    const navigate = useNavigate();
-
-    // 1. Define your form.
+const PostForm = ({ post, action }: PostFormProps) => {
+  const navigate = useNavigate();
+  const { user } = useUserContext();
   const form = useForm<z.infer<typeof PostsSchema>>({
     resolver: zodResolver(PostsSchema),
     defaultValues: {
@@ -38,23 +37,38 @@ const PostForm = ({ post }: PostFormProps) => {
       file: [],
       location: post ?  post?.location : "",
       tags: post ? post.tags.join(',') : "",
-
     },
-  })
- 
-  // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof PostsSchema>) {
+  });
+  
+  const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } = useUpdatePost();
+  
+  const onSubmit = async (value: z.infer<typeof PostsSchema>) => {
+    if (post && action === "Update") {
+      const updatePost = await updatePost({
+        ...value,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
+
+      if (!updatePost) {
+        toast(`${action} post failed. Please try again.`);
+      }
+      return navigate(`/post/${post.$id}`);
+    }
+
     const newPost = await createPost({
-        ...values,
+        ...value,
         userId: user.id,
-    })
+    });
     
     if(!newPost) {
         toast("Please try again");
-    }
+    };
     
     navigate("/");
-  }
+  };
 
   return (
     <Form {...form}>
@@ -121,8 +135,19 @@ const PostForm = ({ post }: PostFormProps) => {
           )}
         />
         <div className="flex gap-4 items-center justify-end">
-        <Button type="button" className="shad-button_dark_4">Cancel</Button>
-        <Button type="submit" className="shad-button_primary whitespace-nowrap">Submit</Button>
+        <Button 
+          type="button" 
+          className="shad-button_dark_4"
+          onClick={() => navigate(-1)}>
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          className="shad-button_primary whitespace-nowrap"
+          disabled={isLoadingCreate || isLoadingUpdate}>
+          {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+          {action} Post
+          </Button>
         </div>
       </form>
     </Form>
