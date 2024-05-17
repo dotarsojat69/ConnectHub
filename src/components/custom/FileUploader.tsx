@@ -1,28 +1,30 @@
-import { FileWithPath, useDropzone } from 'react-dropzone'
 import { useCallback, useState } from 'react'
+import { FileWithPath, useDropzone } from 'react-dropzone'
+
 import { Button } from '../ui/button'
+import { convertFileToUrl } from '@/lib/utils';
 
 type FileUploaderProps = {
   fieldChange: (FILES: File[]) => void;
   mediaUrl: string;
-}
+};
 
 const FileUploader = ({fieldChange, mediaUrl}: FileUploaderProps) => {
   const [file, setFile] = useState<File[]>([]);
-  const [fileUrl, setFileUrl] = useState("");
+  const [fileUrl, setFileUrl] = useState<string>(mediaUrl)
 
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     setFile(acceptedFiles);
     fieldChange(acceptedFiles);
-    setFileUrl(URL.createObjectURL(acceptedFiles[0]));
-  }, [file])
+    setFileUrl(convertFileToUrl(acceptedFiles[0]));
+  }, [file]);
 
   const{ getRootProps, getInputProps } = useDropzone
   ({onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.svg']
-    }
-  })
+      'image/*': ['.png', '.jpg', '.jpeg', '.svg'],
+    },
+  });
 
   return (
     <div {...getRootProps()} className="flex flex-center flex-col bg-slate-300 rounded-xl cursor-pointer">
@@ -53,7 +55,7 @@ const FileUploader = ({fieldChange, mediaUrl}: FileUploaderProps) => {
               SVG, PNG, JPG
             </p>
 
-            <Button className='shad-button_dark_4'>
+            <Button className='bg-slate-500 hover:bg-purple-700'>
               Select from computer
             </Button>
           </div>
