@@ -228,7 +228,7 @@
 
   /* Post Card */
   .post-card {
-    @apply bg-red rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm;
+    @apply bg-primary-500 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm;
   }
 
   .post-card_img {
@@ -242,7 +242,7 @@
 
   /* User card */
   .user-card {
-    @apply flex-center flex-col gap-4 border border-purple-800 rounded-[20px] px-5 py-8;
+    @apply flex-center flex-col gap-4 border border-purple-800 rounded-[20px] px-3 py-8;
   }
 }
 

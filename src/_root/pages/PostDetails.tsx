@@ -74,7 +74,7 @@ const PostDetails = () => {
                   className="w-8 h-8 lg:w-12 lg:h-12 rounded-full"
                 />
                 <div className="flex gap-1 flex-col">
-                  <p className="base-medium lg:body-bold text-light-1">
+                  <p className="base-medium lg:body-bold text-light-4">
                     {post?.creator.name}
                   </p>
                   <div className="flex-center gap-2 text-light-3">
@@ -94,10 +94,10 @@ const PostDetails = () => {
                   to={`/update-post/${post?.$id}`}
                   className={`${user.id !== post?.creator.$id && "hidden"}`}>
                   <img
-                    src={"/assets/icons/edit.svg"}
+                    src={"/assets/icons/edit2.svg"}
                     alt="edit"
-                    width={24}
-                    height={24}
+                    width={22}
+                    height={22}
                   />
                 </Link>
 

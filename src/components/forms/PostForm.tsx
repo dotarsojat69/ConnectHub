@@ -123,11 +123,11 @@ const PostForm = ({ post, action }: PostFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="shad-form_label">Add Tags
-              (separated by comma " , ")</FormLabel>
+              </FormLabel>
               <FormControl>
                 <Input 
                 type="text"
-                placeholder="JS, React, NextJs"
+                placeholder="Activity, Expression, News"
                 className="shad-input" {...field}/>
               </FormControl>
               <FormMessage className="shad-form_message" />
