@@ -1,41 +1,43 @@
 import * as z from "zod"
+import { useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner"
 
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form"
-  import { Input } from "@/components/ui/input"
-  import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form"
-import { RegisterSchema } from "@/lib/validation"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import Loader from "@/components/custom/Loader"
-import { Link, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+  
 import { useCreateAccount, useLoginAccount } from "@/lib/react-query/queriesAndMutation"
+import { RegisterSchema } from "@/lib/validation"
 import { useUserContext } from "@/context/AuthContext"
 
 const Register = () => {
   
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
 
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
   const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
 
-const form = useForm<z.infer<typeof RegisterSchema>>({
-  resolver: zodResolver(RegisterSchema),
-  defaultValues: {
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  },
-});
 
 const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
     const newUser = await createUserAccount(values);
@@ -51,6 +53,10 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
 
     if(!session) {
         return toast("Something went wrong. Please try again.");
+
+        navigate("/login")
+
+        return;
     }
 
     const isLoggedIn = await checkAuthUser();
@@ -62,7 +68,7 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
     } else {
       return toast("Something went wrong while logging in.");
     }
-  }
+  };
 
   return (
       <Form {...form}>
@@ -77,7 +83,8 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
             </p>        
 
 
-      <form onSubmit={form.handleSubmit(handleRegister)} className="flex flex-col gap-5 w-full mt-4">
+      <form onSubmit={form.handleSubmit(handleRegister)}
+      className="flex flex-col gap-5 w-full mt-4">
         <FormField
           control={form.control}
           name="name"

@@ -1,6 +1,7 @@
 import { ID, ImageGravity, Query } from "appwrite";
-import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
+
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 
 export async function createUserAccount(user: INewUser) {
     try {
@@ -43,7 +44,8 @@ export async function saveUserToDB(user: {
             appwriteConfig.userCollectionId,
             ID.unique(),
             user
-        )
+        );
+        
         return newUser;
     } catch (error) {
         console.log(error);
@@ -102,43 +104,46 @@ export async function logoutAccount() {
 }
 
 export async function createPost(post: INewPost) {
-    try {
-      const uploadedFile = await uploadFile(post.file[0]);
-      
-      if(!uploadedFile) throw Error;
+  try {
+    // Upload file to appwrite storage
+    const uploadedFile = await uploadFile(post.file[0]);
 
-      const fileUrl = getFilePreview(uploadedFile.$id);
+    if (!uploadedFile) throw Error;
 
-      if (!fileUrl) {
-        await deleteFile(uploadedFile.$id);
-        throw Error;
+    // Get file url
+    const fileUrl = getFilePreview(uploadedFile.$id);
+    if (!fileUrl) {
+      await deleteFile(uploadedFile.$id);
+      throw Error;
     }
 
-        const tags = post?.tags?.replace(/ /g, "").split(",") || [];
+    // Convert tags into array
+    const tags = post.tags?.replace(/ /g, "").split(",") || [];
 
-        const newPost = await databases.createDocument(
-            appwriteConfig.databaseId,
-            appwriteConfig.postCollectionId,
-            ID.unique(),
-            {
-                creator: post.userId,
-                caption: post.caption,
-                imageUrl: fileUrl,
-                imageId: uploadedFile.$id,
-                location: post.location,
-                tags: tags,
-            }
-        )
+    // Create post
+    const newPost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      ID.unique(),
+      {
+        creator: post.userId,
+        caption: post.caption,
+        imageUrl: fileUrl,
+        imageId: uploadedFile.$id,
+        location: post.location,
+        tags: tags,
+      }
+    );
 
-        if(!newPost) {
-            await deleteFile(uploadedFile.$id);
-            throw Error;
-        }
-
-        return newPost
-    } catch (error) {
-        console.log(error);
+    if (!newPost) {
+      await deleteFile(uploadedFile.$id);
+      throw Error;
     }
+
+    return newPost;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function uploadFile(file: File) {
@@ -201,17 +206,17 @@ export async function searchPosts(searchTerm: string) {
   }
 
 export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
-    const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+    const queriesAndMutation: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
   
     if (pageParam) {
-      queries.push(Query.cursorAfter(pageParam.toString()));
+      queriesAndMutation.push(Query.cursorAfter(pageParam.toString()));
     }
   
     try {
       const posts = await databases.listDocuments(
         appwriteConfig.databaseId,
         appwriteConfig.postCollectionId,
-        queries
+        queriesAndMutation
       );
   
       if (!posts) throw Error;
@@ -255,7 +260,7 @@ export async function updatePost(post: IUpdatePost) {
         if (!uploadedFile) throw Error;
   
         // Get new file url
-        const fileUrl = getFilePreview(uploadedFile.$id);
+        const fileUrl = await getFilePreview(uploadedFile.$id);
         if (!fileUrl) {
           await deleteFile(uploadedFile.$id);
           throw Error;
@@ -465,7 +470,8 @@ export async function updateUser(user: IUpdateUser) {
         if (!uploadedFile) throw Error;
   
         // Get new file url
-        const fileUrl = getFilePreview(uploadedFile.$id);
+        const fileUrl = await getFilePreview(uploadedFile.$id);
+        
         if (!fileUrl) {
           await deleteFile(uploadedFile.$id);
           throw Error;
