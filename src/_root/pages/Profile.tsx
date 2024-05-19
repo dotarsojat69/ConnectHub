@@ -55,7 +55,7 @@ const Profile = () => {
           />
           <div className="flex flex-col flex-1 justify-between md:mt-2">
             <div className="flex flex-col w-full">
-              <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full invert">
+              <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
                 {currentUser.name}
               </h1>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
@@ -86,9 +86,8 @@ const Profile = () => {
                   alt="edit"
                   width={20}
                   height={20}
-                  className="invert"
                 />
-                <p className="flex whitespace-nowrap small-medium invert">
+                <p className="flex whitespace-nowrap small-medium">
                   Edit Profile
                 </p>
               </Link>

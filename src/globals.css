@@ -228,7 +228,7 @@
 
   /* Post Card */
   .post-card {
-    @apply bg-primary-600 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm;
+    @apply bg-red rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm;
   }
 
   .post-card_img {
@@ -250,7 +250,7 @@
   /* SHADCN COMPONENTS */
   /* Form */
   .shad-form_label {
-    @apply text-light-2 !important;
+    @apply text-black !important;
   }
 
   .shad-form_message {

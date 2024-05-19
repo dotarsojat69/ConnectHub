@@ -5,15 +5,13 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
 import { Button } from "../ui/button";
-import Loader from "./Loader";
 
 
 const Sidebar = () => {
-    const navigate = useNavigate();
     const { pathname } = useLocation();
-    const { user, isLoading } = useUserContext();
-
     const { mutate: Logout, isSuccess } = useLogoutAccount();
+    const navigate = useNavigate();
+    const { user } = useUserContext();
 
     useEffect(() => {
         if (isSuccess) navigate(0);
@@ -31,26 +29,22 @@ const Sidebar = () => {
                 />
             </Link>
 
-            {isLoading || !user.email ? (
-                <div className="h-14">
-                    <Loader />
-                </div>
-            ) : (
-                <Link to={`/profile/${user.id}`} className="flex gap-3 items-center">
-                    <img src={user.imageUrl}
-                    alt="profile"
-                    className="h-14 w-14 rounded-full"
-                />
-                <div>
+            <Link to={`/profile/${user.id}`}
+            className="flex gap-3 items-center">
+              <img 
+                src={user.imageUrl} 
+                alt="profile"
+                className="h-14 w-14 rounded-full"
+            />
+            <div className="flex flex-col">
                 <p className="body-bold">
                     {user.name}
                 </p>
                 <p className="small-regular text-light-3">
                     @{user.username}
                 </p>
-                </div>
-                </Link>
-            )}
+            </div>
+            </Link>
 
             <ul className="flex flex-col gap-6">
                 {sidebarLinks.map((link: INavLink) => {
