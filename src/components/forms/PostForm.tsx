@@ -45,14 +45,14 @@ const PostForm = ({ post, action }: PostFormProps) => {
   
   const onSubmit = async (value: z.infer<typeof PostsSchema>) => {
     if (post && action === "Update") {
-      const updatePost = await updatePost({
+      const updatedPost = await updatePost({
         ...value,
         postId: post.$id,
         imageId: post.imageId,
         imageUrl: post.imageUrl,
       });
 
-      if (!updatePost) {
+      if (!updatedPost) {
         toast(`${action} post failed. Please try again.`);
       }
       return navigate(`/post/${post.$id}`);
