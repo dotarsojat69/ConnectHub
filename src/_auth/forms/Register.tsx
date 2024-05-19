@@ -21,21 +21,22 @@ import { useUserContext } from "@/context/AuthContext"
 
 const Register = () => {
   
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
+  
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+  
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
   const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
-
-const form = useForm<z.infer<typeof RegisterSchema>>({
-  resolver: zodResolver(RegisterSchema),
-  defaultValues: {
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-  },
-});
 
 const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
     const newUser = await createUserAccount(values);
@@ -51,6 +52,8 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
 
     if(!session) {
         return toast("Something went wrong. Please try again.");
+
+        navigate("/login")
     }
 
     const isLoggedIn = await checkAuthUser();
@@ -62,7 +65,7 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
     } else {
       return toast("Something went wrong while logging in.");
     }
-  }
+  };
 
   return (
       <Form {...form}>
