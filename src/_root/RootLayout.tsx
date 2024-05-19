@@ -7,7 +7,7 @@ import Sidebar from "@/components/custom/Sidebar"
 
 const RootLayout = () => {
   return (
-    <div className="w-full md:flex bg-[url(/assets/images/pattern.svg)] bg-auto">
+    <div className="w-full md:flex ">
       <Topbar />
       <Sidebar />
 
