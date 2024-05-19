@@ -255,7 +255,7 @@ export async function updatePost(post: IUpdatePost) {
         if (!uploadedFile) throw Error;
   
         // Get new file url
-        const fileUrl = getFilePreview(uploadedFile.$id);
+        const fileUrl = await getFilePreview(uploadedFile.$id);
         if (!fileUrl) {
           await deleteFile(uploadedFile.$id);
           throw Error;
@@ -465,7 +465,7 @@ export async function updateUser(user: IUpdateUser) {
         if (!uploadedFile) throw Error;
   
         // Get new file url
-        const fileUrl = getFilePreview(uploadedFile.$id);
+        const fileUrl = await getFilePreview(uploadedFile.$id);
         if (!fileUrl) {
           await deleteFile(uploadedFile.$id);
           throw Error;
