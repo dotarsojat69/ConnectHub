@@ -48,7 +48,7 @@ const Home = () => {
 
       <div className="home-creators bg-primary-500">
         <h3 className="h3-bold text-black">
-          Suggestions
+          Find Others
         </h3>
         {isUserLoading && !creators ? (
           <Loader />
