@@ -38,22 +38,25 @@ const Register = () => {
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateAccount();
   const { mutateAsync: loginAccount, isPending: isLogin } = useLoginAccount();
 
-const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
-    const newUser = await createUserAccount(values);
+const handleRegister = async (user: z.infer<typeof RegisterSchema>) => {
+  try {
+    const newUser = await createUserAccount(user);
 
     if (!newUser) {
       return toast("Registration failed. Please try again.");
     }
 
     const session = await loginAccount({
-        email: values.email,
-        password: values.password,
+        email: user.email,
+        password: user.password,
     });
 
     if(!session) {
-        return toast("Something went wrong. Please try again.");
+        toast("Something went wrong. Please try again.");
 
-        navigate("/login")
+        navigate("/login");
+
+        return;
     }
 
     const isLoggedIn = await checkAuthUser();
@@ -64,6 +67,9 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
       navigate("/")
     } else {
       return toast("Something went wrong while logging in.");
+    }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -138,7 +144,9 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
             <div className="flex-center gap-2">
                 <Loader /> Loading...
             </div>
-        ): "Register"}
+        ) : (
+          "Register"
+        )}
         </Button>
 
         <p className="text-small-regular text-black text-center mt-2">
@@ -150,7 +158,7 @@ const handleRegister = async (values: z.infer<typeof RegisterSchema>) => {
       </form>
       </div>
     </Form>
-  )
-}
+  );
+};
 
 export default Register

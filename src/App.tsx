@@ -34,7 +34,7 @@ const App = () => {
         </Routes>
         <Toaster />
     </main>
-  )
-}
+  );
+};
 
 export default App

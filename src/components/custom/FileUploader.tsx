@@ -5,7 +5,7 @@ import { Button } from '../ui/button'
 import { convertFileToUrl } from '@/lib/utils';
 
 type FileUploaderProps = {
-  fieldChange: (FILES: File[]) => void;
+  fieldChange: (files: File[]) => void;
   mediaUrl: string;
 };
 
@@ -22,7 +22,7 @@ const FileUploader = ({fieldChange, mediaUrl}: FileUploaderProps) => {
   const{ getRootProps, getInputProps } = useDropzone
   ({onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.svg'],
+      'image/*': ['.png', '.jpeg', '.jpg'],
     },
   });
 
@@ -43,9 +43,9 @@ const FileUploader = ({fieldChange, mediaUrl}: FileUploaderProps) => {
           <div className="file_uploader-box">
             <img 
             src="/assets/icons/file-upload.svg" 
-            alt="file-upload"
             width={96}
             height={77}
+            alt="file-upload"
             />
 
             <h3 className='base-medium text-black mb-2 mt-6'>
@@ -55,14 +55,13 @@ const FileUploader = ({fieldChange, mediaUrl}: FileUploaderProps) => {
               SVG, PNG, JPG
             </p>
 
-            <Button className='bg-slate-500 hover:bg-purple-700'>
+            <Button type='button' className='bg-slate-500 hover:bg-purple-700'>
               Select from computer
             </Button>
           </div>
-        )
-      }
+        )}
     </div>
-  )
-}
+  );
+};
 
-export default FileUploader
+export default FileUploader;

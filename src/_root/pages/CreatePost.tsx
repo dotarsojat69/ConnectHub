@@ -19,7 +19,7 @@ const CreatePost = () => {
         <PostForm action="Create" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreatePost
+export default CreatePost;

@@ -1,18 +1,19 @@
-import { Link, useNavigate } from "react-router-dom"
-import { Button } from "../ui/button"
 import { useEffect } from "react";
-import { useLogoutAccount } from "@/lib/react-query/queriesAndMutation";
+import { Link, useNavigate } from "react-router-dom"
+
+import { Button } from "../ui/button"
 import { useUserContext } from "@/context/AuthContext";
+import { useLogoutAccount } from "@/lib/react-query/queriesAndMutation";
 
 
 const Topbar = () => {
-    const { mutate: Logout, isSuccess } = useLogoutAccount();
     const navigate = useNavigate();
     const { user } = useUserContext();
+    const { mutate: Logout, isSuccess } = useLogoutAccount();
 
     useEffect(() => {
         if (isSuccess) navigate(0);
-    },[isSuccess])
+    },[isSuccess]);
 
   return (
     <section className="topbar">
@@ -40,7 +41,7 @@ const Topbar = () => {
             </div>
         </div>
     </section>
-  )
-}
+  );
+};
 
-export default Topbar
+export default Topbar;

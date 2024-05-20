@@ -55,7 +55,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
       if (!updatedPost) {
         toast(`${action} post failed. Please try again.`);
       }
-      return navigate(`/post/${post.$id}`);
+      return navigate(`/posts/${post.$id}`);
     }
 
     const newPost = await createPost({
@@ -96,8 +96,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
               <FormControl>
                 <FileUploader 
                 fieldChange={field.onChange}
-                mediaUrl={post?.mediaUrl}
-
+                mediaUrl={post?.imageUrl}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -151,7 +150,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default PostForm
+export default PostForm;

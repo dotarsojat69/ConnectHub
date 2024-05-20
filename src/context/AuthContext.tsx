@@ -1,7 +1,8 @@
-import { getCurrentUser } from '@/lib/appwrite/api';
-import { IContextType, IUser } from '@/types';
-import { createContext, useContext, useEffect, useState} from 'react'
 import { useNavigate } from 'react-router-dom';
+import { createContext, useContext, useEffect, useState} from 'react'
+
+import { IContextType, IUser } from '@/types';
+import { getCurrentUser } from '@/lib/appwrite/api';
 
 export const INITIAL_USER = {
     id: "",
@@ -26,8 +27,8 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>(INITIAL_USER);
-  const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkAuthUser = async () => {
     

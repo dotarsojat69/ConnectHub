@@ -74,7 +74,7 @@ const PostCard = ({post }: PostCardProps ) => {
 
       <PostStats post={post} userId={user.id} />
     </div>
-  )
-}
+  );
+};
 
-export default PostCard
+export default PostCard;

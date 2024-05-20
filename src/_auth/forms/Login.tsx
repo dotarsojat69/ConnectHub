@@ -35,12 +35,9 @@ const form = useForm<z.infer<typeof LoginSchema>>({
 });
 
  
-const handleLogin = async (values: z.infer<typeof LoginSchema>) => {
+const handleLogin = async (user: z.infer<typeof LoginSchema>) => {
 
-  const session = await loginAccount({
-    email: values.email,
-    password: values.password,
-  })
+  const session = await loginAccount(user);
 
   if (!session) {
     return toast("Login failed. Please try again.");
@@ -57,7 +54,7 @@ const handleLogin = async (values: z.infer<typeof LoginSchema>) => {
     return toast("Login failed. Please try again.");
   
   }
-}
+};
 
   return (
       <Form {...form}>
