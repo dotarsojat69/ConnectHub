@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-      <img src="/assets/images/logo.svg" alt="Project Banner">
+      <img src="/assets/images/logo-connect-hub.png" alt="Project Banner">
   <br />
 
   <div>
@@ -13,24 +13,17 @@
 
   <h3 align="center">A Social Media Application</h3>
 
-## Expanding the ESLint configuration
+  <div align="center">
+     Discover a user-friendly social media platform that boasts an attractive design and a wealth of features. Effortlessly create and browse posts while benefiting from a robust authentication system and rapid data fetching, thanks to React Query, ensuring a seamless user experience.
+    </div>
+  </div>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 📋 <a name="table">Table of Contents</a>
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. 🤖 [Introduction](#introduction)
+2. ⚙️ [Tech Stack](#tech-stack)
+3. 🔋 [Features](#features)
+4. 🤸 [Quick Start](#quick-start)
+5. 🕸️ [Snippets](#snippets)
+6. 🔗 [Links](#links)
+7. 🚀 [More](#more)
