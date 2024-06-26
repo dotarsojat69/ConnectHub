@@ -76,7 +76,7 @@ const handleRegister = async (user: z.infer<typeof RegisterSchema>) => {
   return (
       <Form {...form}>
            <div className="sm:w-420 flex-center flex-col">
-            <img src="/assets/icons/logo-new.svg" alt="logo" />
+            <img src="/assets/images/logo-new.png" alt="logo" />
 
             <h2 className="h3-bold md:h2-bold pt-5 sm:pt-8">
                 Create a new account
