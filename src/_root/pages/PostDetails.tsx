@@ -9,9 +9,12 @@ import {
   useGetPostById,
   useGetUserPosts,
   useDeletePost,
+  // useGetComments,
+  // useCreateComment,
 } from "@/lib/react-query/queriesAndMutation";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
+// import CommentForm from "@/components/custom/CommentForm";
 
 const PostDetails = () => {
   const navigate = useNavigate();
@@ -24,6 +27,9 @@ const PostDetails = () => {
   );
   const { mutate: deletePost } = useDeletePost();
 
+  // const { mutateAsync: createComment, isPending: createCommentLoading } = useCreateComment(post);
+  // const { data: comment, isLoading: commentsLoading } = useGetComments(id);
+
   const relatedPosts = userPosts?.documents.filter(
     (userPost) => userPost.$id !== id
   );
@@ -32,6 +38,10 @@ const PostDetails = () => {
     deletePost({ postId: id, imageId: post?.imageId });
     navigate(-1);
   };
+
+  // const handleCreateComment = (newComment: INewComment) => {
+  //   createComment(newComment);
+  // };
 
   return (
     <div className="post_details-container">

@@ -1,7 +1,7 @@
 import { ID, ImageGravity, Query } from "appwrite";
 
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
+import { IComment, INewComment, INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 
 export async function createUserAccount(user: INewUser) {
     try {
@@ -508,3 +508,49 @@ export async function updateUser(user: IUpdateUser) {
       console.log(error);
     }
   }
+
+// Membuat komentar baru
+export async function createComment(newComment: INewComment) {
+  try {
+    const createComment = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      ID.unique(),
+      {
+        postId: newComment.postId,
+        userId: newComment.userId,
+        comment: newComment.comment,
+      }
+    );
+
+    if (!createComment) throw Error;
+
+    return createComment;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Mendapatkan komentar untuk postingan tertentu
+export async function getComments(postId: string): Promise<IComment[]> {
+  try {
+    const commentsResponse = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      [Query.equal('postId', postId)]
+    );
+
+    if (!commentsResponse) throw Error;
+
+    const comments: IComment[] = commentsResponse.documents.map((doc) => ({
+      id: doc.$id,
+      postId: doc.postId,
+      userId: doc.userId,
+      comment: doc.comment
+    }));
+    return comments;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}

@@ -56,3 +56,16 @@ export type IUser = {
     tags?: string;
   };
 
+  export type INewComment = {
+    postId: string;
+    userId: string;
+    comment: string;
+  };
+
+  export type IComment = {
+    id: string;
+    postId: string;
+    userId: string;
+    comment: string;
+  };
+

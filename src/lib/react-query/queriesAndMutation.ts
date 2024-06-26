@@ -4,8 +4,8 @@ import {
   useQueryClient,
   useInfiniteQuery,
 } from "@tanstack/react-query"
-import { createPost, createUserAccount, deletePost, deleteSavedPost, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getUserById, getUserPosts, getUsers, likePost, loginAccount, logoutAccount, savePost, searchPosts, updatePost, updateUser } from "../appwrite/api"
-import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types"
+import { createComment, createPost, createUserAccount, deletePost, deleteSavedPost, getComments, getCurrentUser, getInfinitePosts, getPostById, getRecentPosts, getUserById, getUserPosts, getUsers, likePost, loginAccount, logoutAccount, savePost, searchPosts, updatePost, updateUser } from "../appwrite/api"
+import { INewComment, INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types"
 import { QUERY_KEYS } from "./queryKeys";
 
 export const useCreateAccount = () => {
@@ -212,5 +212,26 @@ export const useUpdatePost = () => {
           queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
         });
       },
+    });
+  };
+
+  export const useCreateComment = (postId: string) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (newComment: INewComment) => createComment(newComment),
+      onSuccess: () => {
+        // Invalidate queries yang terkait dengan postingan atau komentar
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
+        });
+      },
+    });
+  };
+  
+  export const useGetComments = (postId: string) => {
+    return useQuery({
+      queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
+      queryFn: () => getComments(postId),
+      enabled: !!postId,
     });
   };
