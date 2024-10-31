@@ -28,16 +28,16 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
   const { data: currentUser } = useGetCurrentUser();
 
-  const savedPostRecord = currentUser &&
-  Array.isArray(currentUser.save)
-  ? currentUser.save.find(
-      (record: Models.Document) => record.post.$id === post.$id
-    )
-  : undefined;
+  const savedPostRecord =
+    currentUser && Array.isArray(currentUser.save)
+      ? currentUser.save.find(
+          (record: Models.Document) => record.post && record.post.$id === post.$id
+        )
+      : undefined;
 
   useEffect(() => {
     setIsSaved(!!savedPostRecord);
-  }, [currentUser]);
+  }, [currentUser, savedPostRecord]);
 
   const handleLikePost = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
@@ -76,7 +76,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
   return (
     <div
-      className={`flex justify-between items-center z-20 ${containerStyles}`}>
+      className={`flex justify-between items-center z-20 ${containerStyles}`}
+    >
       <div className="flex gap-2 mr-5">
         <img
           src={`${
